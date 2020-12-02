@@ -1,0 +1,12 @@
+package com.cashlez.demo.repo;
+
+import com.cashlez.demo.dto.MerchantStatus;
+import com.cashlez.demo.model.Merchant;
+import org.springframework.data.repository.CrudRepository;
+
+import java.util.Optional;
+
+public interface MerchantRepository extends CrudRepository<Merchant, Long> {
+
+    Optional<Merchant> findByIdAndStatus(long id, MerchantStatus merchantStatus);
+}
