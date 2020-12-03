@@ -5,9 +5,14 @@ import com.cashlez.demo.dto.general.GeneralResponse;
 import com.cashlez.demo.model.Category;
 import com.cashlez.demo.model.Merchant;
 import com.cashlez.demo.repo.MerchantRepository;
+import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,16 +34,45 @@ public class MerchantService {
         return generalResponse;
     }
 
-    public GeneralResponse addMultipleNewMerchant (List<Merchant> merchants){
+    public GeneralResponse addMultipleNewMerchant (List<Merchant> merchants) throws NoSuchAlgorithmException {
 
         GeneralResponse generalResponse = new GeneralResponse();
 
         for (Merchant merchant : merchants){
+            String hashedPassword = Hashing.sha256()
+                    .hashString(merchant.getPassword(), StandardCharsets.UTF_8)
+                    .toString();
+            merchant.setPassword(hashedPassword) ;
             merchantRepository.save(merchant);
-            generalResponse.success("00", "Success add merchant !", merchants);
+            generalResponse.success("201", "Success add merchant !", merchants);
         }
         return generalResponse;
     }
+
+    public GeneralResponse loginMerchant (Merchant merchant) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        Optional<Merchant> merchantOptional = merchantRepository.findByUserName(merchant.getUserName());
+        if(merchantOptional.isPresent()){
+            String passwordData = merchantOptional.get().getPassword();
+            String passwordPayload = merchant.getPassword();
+            System.out.println(passwordData);
+            System.out.println(passwordPayload);
+
+            if (!passwordData.equals(passwordPayload)){
+                System.out.println(passwordData);
+                System.out.println(passwordPayload);
+
+                System.out.println("masuk sini");
+
+                return generalResponse.fail("403", "Incorrect username or password!");
+            }
+            generalResponse.success("200", "Success Login merchant !", merchant);
+        } else {
+            generalResponse.fail("404", "Merchant not found !");
+        }
+        return generalResponse;
+    }
+
 
     public GeneralResponse updateMerchantService (Merchant merchant){
 
@@ -58,9 +92,9 @@ public class MerchantService {
                 newMerchant.setAddress(merchant.getAddress());
             }
             merchantRepository.save(newMerchant);
-            generalResponse.success("00","Success update merchant !", newMerchant);
+            generalResponse.success("200","Success update merchant !", newMerchant);
         }else {
-            generalResponse.fail("01", "Merchant not found !");
+            generalResponse.fail("404", "Merchant not found !");
         }
         return generalResponse;
     }
@@ -80,9 +114,9 @@ public class MerchantService {
             deletedMerchant.setModifiedDate(date);
             deletedMerchant.setStatus(MerchantStatus.DELETED);
             merchantRepository.save(deletedMerchant);
-            generalResponse.success("00", "Success delete merchant !", deletedMerchant);
+            generalResponse.success("200", "Success delete merchant !", deletedMerchant);
         }else {
-            generalResponse.fail("01", "Merchant not found !");
+            generalResponse.fail("404", "Merchant not found !");
         }
         return generalResponse;
     }

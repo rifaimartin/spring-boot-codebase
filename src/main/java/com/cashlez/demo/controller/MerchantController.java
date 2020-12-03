@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -34,8 +35,13 @@ public class MerchantController {
     }
 
     @PostMapping("/add_merchant")
-    public ResponseEntity<GeneralResponse> addMerchantController(@RequestBody List<Merchant> merchants){
+    public ResponseEntity<GeneralResponse> addMerchantController(@RequestBody List<Merchant> merchants) throws NoSuchAlgorithmException {
         return new ResponseEntity<>(merchantService.addMultipleNewMerchant(merchants), HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<GeneralResponse> loginMerchant(@RequestBody Merchant merchant) {
+        return new ResponseEntity<>(merchantService.loginMerchant(merchant), HttpStatus.OK);
     }
 
     @PostMapping("/update_merchant")

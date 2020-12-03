@@ -12,6 +12,10 @@ public class Merchant extends BaseEntity {
 
     private String address;
 
+    private String userName;
+
+    private String password;
+
     private MerchantStatus status = MerchantStatus.ACTIVE;
 
     public String getMerchantName() {
@@ -45,5 +49,21 @@ public class Merchant extends BaseEntity {
                 ", address='" + address + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
