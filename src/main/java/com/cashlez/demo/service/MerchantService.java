@@ -5,8 +5,17 @@ import com.cashlez.demo.dto.general.GeneralResponse;
 import com.cashlez.demo.model.Category;
 import com.cashlez.demo.model.Merchant;
 import com.cashlez.demo.repo.MerchantRepository;
+import com.cashlez.demo.security.JwtProperty;
+import com.cashlez.demo.security.JwtResponse;
+import com.cashlez.demo.util.JwtUtil;
+import com.cashlez.demo.util.response.CustomResponse;
 import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -21,6 +30,15 @@ import java.util.Optional;
 public class MerchantService {
 
     private final MerchantRepository merchantRepository;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtil jwtTokenUtil;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     public MerchantService(MerchantRepository merchantRepository) {
@@ -55,9 +73,6 @@ public class MerchantService {
         if(merchantOptional.isPresent()){
             String passwordData = merchantOptional.get().getPassword();
             String passwordPayload = merchant.getPassword();
-            System.out.println(passwordData);
-            System.out.println(passwordPayload);
-
             if (!passwordData.equals(passwordPayload)){
                 System.out.println(passwordData);
                 System.out.println(passwordPayload);
@@ -66,7 +81,14 @@ public class MerchantService {
 
                 return generalResponse.fail("403", "Incorrect username or password!");
             }
-            generalResponse.success("200", "Success Login merchant !", merchant);
+            String idMerchant = String.valueOf(merchantOptional.get().getId());
+            String tokenMerchant = jwtTokenUtil.generateToken(merchantOptional.get(), "WEB", idMerchant);
+
+            CustomResponse returnLoginResponse = new CustomResponse();
+            returnLoginResponse.setToken(tokenMerchant);
+            returnLoginResponse.setMerchant(merchant);
+
+            generalResponse.success("200", "Success Login merchant !", returnLoginResponse);
         } else {
             generalResponse.fail("404", "Merchant not found !");
         }
