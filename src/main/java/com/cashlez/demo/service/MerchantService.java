@@ -2,29 +2,22 @@ package com.cashlez.demo.service;
 
 import com.cashlez.demo.dto.MerchantStatus;
 import com.cashlez.demo.dto.general.GeneralResponse;
-import com.cashlez.demo.model.Category;
 import com.cashlez.demo.model.Merchant;
 import com.cashlez.demo.repo.MerchantRepository;
-import com.cashlez.demo.security.JwtProperty;
-import com.cashlez.demo.security.JwtResponse;
 import com.cashlez.demo.util.JwtUtil;
 import com.cashlez.demo.util.response.CustomResponse;
 import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class MerchantService {
@@ -45,10 +38,23 @@ public class MerchantService {
         this.merchantRepository = merchantRepository;
     }
 
-    public GeneralResponse getAllMerchantService(){
-        merchantRepository.findAll();
+    public GeneralResponse getAllMerchantService(Integer pageNo , Integer pageSize){
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Merchant> pageMerchant = merchantRepository.findAll(pageable);
+
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("page", pageMerchant.getNumber());
+        meta.put("size", pageMerchant.getSize());
+        meta.put("totalData", pageMerchant.getTotalElements());
+        meta.put("totalDataOnPage", pageMerchant.getNumberOfElements());
+
+        Map<String, Object> newData = new HashMap<>();
+        newData.put("data", pageMerchant.getContent());
+        newData.put("meta", meta);
+
         GeneralResponse generalResponse = new GeneralResponse();
-        generalResponse.success("200", "List Of Merchant", merchantRepository.findAll());
+        generalResponse.success("200", "List Of Merchant", newData);
         return generalResponse;
     }
 

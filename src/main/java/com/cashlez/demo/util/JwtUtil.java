@@ -1,6 +1,5 @@
 package com.cashlez.demo.util;
 
-import com.cashlez.demo.enumeration.Device;
 import com.cashlez.demo.model.Merchant;
 import com.cashlez.demo.security.JwtProperty;
 import io.jsonwebtoken.Claims;
