@@ -1,6 +1,7 @@
 package com.cashlez.demo.model;
 
 import com.cashlez.demo.base.BaseEntity;
+import com.cashlez.demo.dto.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;
@@ -13,7 +14,7 @@ public class User extends BaseEntity {
 
     private String phoneNumber;
 
-    private String status = "ACTIVE";
+    private UserStatus status = UserStatus.ACTIVE;
 
     @JsonIgnore
     private String passHash;
@@ -25,6 +26,14 @@ public class User extends BaseEntity {
 
     @OneToOne
     private Merchant Merchant;
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
 
     public String getUserName() {
         return userName;
@@ -40,14 +49,6 @@ public class User extends BaseEntity {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getPassHash() {

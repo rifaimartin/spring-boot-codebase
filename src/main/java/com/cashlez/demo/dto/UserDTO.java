@@ -1,5 +1,7 @@
 package com.cashlez.demo.dto;
 
+import com.cashlez.demo.model.Role;
+
 public class UserDTO {
     private long id;
     private String userName;
@@ -10,6 +12,15 @@ public class UserDTO {
 
     private String email;
 
+    public com.cashlez.demo.model.Role getRole() {
+        return Role;
+    }
+
+    public void setRole(com.cashlez.demo.model.Role role) {
+        Role = role;
+    }
+
+    private Role Role;
 
     public String getUserName() {
         return userName;
