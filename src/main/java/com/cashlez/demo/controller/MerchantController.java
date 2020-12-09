@@ -25,8 +25,9 @@ public class MerchantController {
     }
 
     @PostMapping()
-    public ResponseEntity<GeneralResponse> getAllMerchant() {
-        return new ResponseEntity<>(merchantService.getAllMerchantService(), HttpStatus.OK);
+    public ResponseEntity<GeneralResponse> getAllMerchant( @RequestParam(defaultValue = "0") Integer pageNo,
+                                                           @RequestParam(defaultValue = "3") Integer pageSize) {
+        return new ResponseEntity<>(merchantService.getAllMerchantService(pageNo, pageSize), HttpStatus.OK);
     }
 
     @PostMapping("/get_one_merchant")
