@@ -1,6 +1,5 @@
 package com.cashlez.demo.security;
 
-import com.cashlez.demo.model.Merchant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,16 +20,23 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Autowired
     JwtRequestFilter jwtRequestFilter;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .userDetailsService();
-    }
+    @Autowired
+    private JwtAuthenticationEntryPoint entryPoint;
+
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//  auth
+//                .userDetailsService(userPrincipalDetailsServiceImpl);
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf().disable().authorizeRequests()
+                .antMatchers("/rest/**").authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(entryPoint)
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http

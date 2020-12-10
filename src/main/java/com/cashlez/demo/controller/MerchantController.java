@@ -1,6 +1,5 @@
 package com.cashlez.demo.controller;
 
-import com.cashlez.demo.dto.SearchByCategoryId;
 import com.cashlez.demo.dto.SearchByMerchantId;
 import com.cashlez.demo.dto.general.GeneralResponse;
 import com.cashlez.demo.model.Merchant;
@@ -40,10 +39,10 @@ public class MerchantController {
         return new ResponseEntity<>(merchantService.addMultipleNewMerchant(merchants), HttpStatus.OK);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<GeneralResponse> loginMerchant(@RequestBody Merchant merchant) {
-        return new ResponseEntity<>(merchantService.loginMerchant(merchant), HttpStatus.OK);
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<GeneralResponse> loginMerchant(@RequestBody Merchant merchant) {
+//        return new ResponseEntity<>(merchantService.loginMerchant(merchant), HttpStatus.OK);
+//    }
 
     @PostMapping("/update_merchant")
     public ResponseEntity<GeneralResponse> updateMerchantController(@RequestBody Merchant merchant){

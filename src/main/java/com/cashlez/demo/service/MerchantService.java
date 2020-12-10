@@ -73,33 +73,28 @@ public class MerchantService {
         return generalResponse;
     }
 
-    public GeneralResponse loginMerchant (Merchant merchant) {
-        GeneralResponse generalResponse = new GeneralResponse();
-        Optional<Merchant> merchantOptional = merchantRepository.findByUserName(merchant.getUserName());
-        if(merchantOptional.isPresent()){
-            String passwordData = merchantOptional.get().getPassword();
-            String passwordPayload = merchant.getPassword();
-            if (!passwordData.equals(passwordPayload)){
-                System.out.println(passwordData);
-                System.out.println(passwordPayload);
-
-                System.out.println("masuk sini");
-
-                return generalResponse.fail("403", "Incorrect username or password!");
-            }
-            String idMerchant = String.valueOf(merchantOptional.get().getId());
-            String tokenMerchant = jwtTokenUtil.generateToken(merchantOptional.get(), "WEB", idMerchant);
-
-            CustomResponse returnLoginResponse = new CustomResponse();
-            returnLoginResponse.setToken(tokenMerchant);
-            returnLoginResponse.setMerchant(merchant);
-
-            generalResponse.success("200", "Success Login merchant !", returnLoginResponse);
-        } else {
-            generalResponse.fail("404", "Merchant not found !");
-        }
-        return generalResponse;
-    }
+//    public GeneralResponse loginMerchant (Merchant merchant) {
+//        GeneralResponse generalResponse = new GeneralResponse();
+//        Optional<Merchant> merchantOptional = merchantRepository.findByUserName(merchant.getUserName());
+//        if(merchantOptional.isPresent()){
+//            String passwordData = merchantOptional.get().getPassword();
+//            String passwordPayload = merchant.getPassword();
+//            if (!passwordData.equals(passwordPayload)){
+//                return generalResponse.fail("403", "Incorrect username or password!");
+//            }
+//            String idMerchant = String.valueOf(merchantOptional.get().getId());
+//            String tokenMerchant = jwtTokenUtil.generateToken(merchantOptional.get(), "WEB", idMerchant);
+//
+//            CustomResponse returnLoginResponse = new CustomResponse();
+//            returnLoginResponse.setToken(tokenMerchant);
+//            returnLoginResponse.setMerchant(merchant);
+//
+//            generalResponse.success("200", "Success Login merchant !", returnLoginResponse);
+//        } else {
+//            generalResponse.fail("404", "Merchant not found !");
+//        }
+//        return generalResponse;
+//    }
 
 
     public GeneralResponse updateMerchantService (Merchant merchant){

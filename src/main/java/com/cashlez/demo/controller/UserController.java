@@ -1,12 +1,8 @@
 package com.cashlez.demo.controller;
 
-import com.cashlez.demo.dto.SearchByMerchantId;
-import com.cashlez.demo.dto.SearchByRoleId;
 import com.cashlez.demo.dto.SearchByUserId;
 import com.cashlez.demo.dto.general.GeneralResponse;
-import com.cashlez.demo.model.Role;
 import com.cashlez.demo.model.User;
-import com.cashlez.demo.service.RoleService;
 import com.cashlez.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +26,11 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUser(pageNo, pageSize), HttpStatus.OK);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<GeneralResponse> loginUser(@RequestBody User user) {
+        return new ResponseEntity<>(userService.loginUser(user), HttpStatus.OK);
+    }
+
     @PostMapping("/get_one_user")
     public ResponseEntity<GeneralResponse> getOneUser (@RequestBody SearchByUserId searchByUserId){
         return new ResponseEntity<>(userService.getOneUser(searchByUserId.getUserId()), HttpStatus.OK);
@@ -43,6 +44,11 @@ public class UserController {
     @PostMapping("/update_user")
     public ResponseEntity<GeneralResponse> updateUserController(@RequestBody User user){
         return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
+    }
+
+    @PostMapping("/activation")
+    public ResponseEntity<GeneralResponse> activationUserController(@RequestBody User user){
+        return new ResponseEntity<>(userService.activationUser(user), HttpStatus.OK);
     }
 
     @PostMapping("/delete_user")

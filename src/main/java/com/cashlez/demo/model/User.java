@@ -16,8 +16,7 @@ public class User extends BaseEntity {
 
     private UserStatus status = UserStatus.ACTIVE;
 
-    @JsonIgnore
-    private String passHash;
+    private String password;
 
     private String email;
 
@@ -51,13 +50,6 @@ public class User extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPassHash() {
-        return passHash;
-    }
-
-    public void setPassHash(String passHash) {
-        this.passHash = passHash;
-    }
 
     public String getEmail() {
         return email;
@@ -81,5 +73,13 @@ public class User extends BaseEntity {
 
     public void setMerchant(com.cashlez.demo.model.Merchant merchant) {
         Merchant = merchant;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

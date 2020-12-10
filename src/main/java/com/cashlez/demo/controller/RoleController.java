@@ -1,7 +1,5 @@
 package com.cashlez.demo.controller;
 
-
-import com.cashlez.demo.dto.SearchByMerchantId;
 import com.cashlez.demo.dto.SearchByRoleId;
 import com.cashlez.demo.dto.general.GeneralResponse;
 import com.cashlez.demo.model.Role;

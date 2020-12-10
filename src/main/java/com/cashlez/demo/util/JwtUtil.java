@@ -1,6 +1,7 @@
 package com.cashlez.demo.util;
 
 import com.cashlez.demo.model.Merchant;
+import com.cashlez.demo.model.User;
 import com.cashlez.demo.security.JwtProperty;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -34,17 +35,17 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(Merchant merchant,String web, String userId) {
-        return createToken(merchant, web, userId);
+    public String generateToken(User user, String web, String userId) {
+        return createToken(user, web, userId);
     }
 
-    private String createToken(Merchant merchant, String web, String userId) {
-        Claims claims = Jwts.claims().setSubject(merchant.getUserName());
+    private String createToken(User user, String web, String userId) {
+        Claims claims = Jwts.claims().setSubject(user.getUserName());
 //        claims.put("scopes", userDetails.getAuthorities());
         claims.setId(userId);
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(merchant.getUserName())
+                .setSubject(user.getUserName())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(getExpiration(web))
                 .signWith(SignatureAlgorithm.HS256, JwtProperty.SECRET).compact();

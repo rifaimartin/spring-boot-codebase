@@ -1,6 +1,7 @@
 package com.cashlez.demo.repo;
 
 import com.cashlez.demo.dto.UserStatus;
+import com.cashlez.demo.model.Merchant;
 import com.cashlez.demo.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,8 @@ import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findById(long id);
+    Optional<User> findByUserName(String userName);
+
 
     Page<User> findAll(Pageable pageable);
     Optional<User> findByIdAndStatus(long id, UserStatus userStatus);

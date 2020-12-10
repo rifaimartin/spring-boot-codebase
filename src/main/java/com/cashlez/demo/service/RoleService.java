@@ -1,13 +1,7 @@
 package com.cashlez.demo.service;
 
-import com.cashlez.demo.dto.MerchantStatus;
-import com.cashlez.demo.dto.PermissionType;
 import com.cashlez.demo.dto.general.GeneralResponse;
-import com.cashlez.demo.model.Category;
-import com.cashlez.demo.model.Merchant;
-import com.cashlez.demo.model.Permissions;
 import com.cashlez.demo.model.Role;
-import com.cashlez.demo.repo.CategoryRepository;
 import com.cashlez.demo.repo.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.security.Permission;
 import java.util.*;
 
 @Service
@@ -30,6 +23,10 @@ public class RoleService {
     public GeneralResponse getAllRole(Integer pageNo , Integer pageSize){
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Role> pageMerchant = roleRepository.findAll(pageable);
+
+        if (pageMerchant.isEmpty()) {
+            System.out.println("data kosong");
+        }
 
         Map<String, Object> meta = new HashMap<>();
         meta.put("page", pageMerchant.getNumber());
