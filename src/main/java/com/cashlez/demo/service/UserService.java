@@ -30,24 +30,28 @@ public class UserService {
         this.userRepository = userRepository ;
     }
 
-    public GeneralResponse getAllUser(Integer pageNo , Integer pageSize){
+    public GeneralResponse getAllUser(Integer pageNo , Integer pageSize, String keyword){
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<User> pageMerchant = userRepository.findAll(pageable);
+        GeneralResponse generalResponse = new GeneralResponse();
+        Page<User> dataUser = userRepository.findAll(pageable, keyword);
 
-        List<UserDTO> listOfUserDTO = ObjectMapperUtils.mapAll(pageMerchant.getContent(), UserDTO.class);
+        if (dataUser.getContent().size() == 0) {
+            return generalResponse.fail("404", "User is empity !");
+        }
+
+        List<UserDTO> listOfUserDTO = ObjectMapperUtils.mapAll(dataUser.getContent(), UserDTO.class);
 
         Map<String, Object> meta = new HashMap<>();
-        meta.put("page", pageMerchant.getNumber());
-        meta.put("size", pageMerchant.getSize());
-        meta.put("totalData", pageMerchant.getTotalElements());
-        meta.put("totalDataOnPage", pageMerchant.getNumberOfElements());
+        meta.put("page", dataUser.getNumber());
+        meta.put("size", dataUser.getSize());
+        meta.put("totalData", dataUser.getTotalElements());
+        meta.put("totalDataOnPage", dataUser.getNumberOfElements());
 
         Map<String, Object> newData = new HashMap<>();
         newData.put("data", listOfUserDTO);
         newData.put("meta", meta);
 
-        GeneralResponse generalResponse = new GeneralResponse();
-        generalResponse.success("200", "List Of User Account", newData );
+        generalResponse.success("200", "List Of User", newData );
         return generalResponse;
     }
 
@@ -71,29 +75,24 @@ public class UserService {
         if (userOptional.isPresent()) {
             generalResponse.success("200", "Detail of user !", userOptional);
         }else  {
-            generalResponse.fail("404", "User not found !");
+            generalResponse.fail("404", "user not found !");
         }
         return generalResponse;
     }
 
     public GeneralResponse deleteUser (long userId){
-
-        Date date = new Date();
-
-        User deletedUser;
-
         GeneralResponse generalResponse = new GeneralResponse();
-
         Optional<User> userOptional = userRepository.findByIdAndStatus(userId, UserStatus.ACTIVE);
-
+        Date date = new Date();
+        User deletedUser;
         if (userOptional.isPresent()){
             deletedUser = userOptional.get();
             deletedUser.setModifiedDate(date);
             deletedUser.setStatus(UserStatus.DELETED);
             userRepository.save(deletedUser);
-            generalResponse.success("200", "Success delete user !", deletedUser);
+            generalResponse.success("200", "user status successfully deleted !", deletedUser);
         }else {
-            generalResponse.fail("404", "User not found !");
+            generalResponse.fail("404", "user not found !");
         }
         return generalResponse;
     }
@@ -118,9 +117,9 @@ public class UserService {
                 newUser.setRole(user.getRole());
             }
             userRepository.save(newUser);
-            generalResponse.success("200","Success update user !", newUser);
+            generalResponse.success("200","user successfully updated!", newUser);
         }else {
-            generalResponse.fail("404", "User not found !");
+            generalResponse.fail("404", "user not found !");
         }
         return generalResponse;
     }
@@ -139,9 +138,9 @@ public class UserService {
                 newUser.setStatus(user.getStatus());
             }
             userRepository.save(newUser);
-            generalResponse.success("200","Success update activation user !", newUser);
+            generalResponse.success("200","user status successfully updated !", newUser);
         }else {
-            generalResponse.fail("404", "User not found !");
+            generalResponse.fail("404", "user not found !");
         }
         return generalResponse;
     }
@@ -156,7 +155,7 @@ public class UserService {
                 return generalResponse.fail("403", "Incorrect username or password!");
             }
             String idUser = String.valueOf(userOptional.get().getId());
-            String tokenMerchant = jwtTokenUtil.generateToken(userOptional.get(), "WEB", idUser);
+            String tokenMerchant = jwtTokenUtil.generateToken(userOptional.get(), idUser);
 
             CustomeResponseLoginUser returnLoginResponse = new CustomeResponseLoginUser();
             returnLoginResponse.setToken(tokenMerchant);

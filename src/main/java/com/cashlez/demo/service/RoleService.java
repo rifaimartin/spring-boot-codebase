@@ -3,6 +3,7 @@ package com.cashlez.demo.service;
 import com.cashlez.demo.dto.general.GeneralResponse;
 import com.cashlez.demo.model.Role;
 import com.cashlez.demo.repo.RoleRepository;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,25 +21,26 @@ public class RoleService {
         this.roleRepository = roleRepository;
     }
 
-    public GeneralResponse getAllRole(Integer pageNo , Integer pageSize){
+    public GeneralResponse getAllRole(Integer pageNo , Integer pageSize, String keyword){
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Role> pageMerchant = roleRepository.findAll(pageable);
+        Page<Role> dataRole = roleRepository.findAll(pageable, keyword);
 
-        if (pageMerchant.isEmpty()) {
-            System.out.println("data kosong");
+        GeneralResponse generalResponse = new GeneralResponse();
+
+        if (dataRole.getContent().size() == 0) {
+            return generalResponse.fail("404", "Role is empity !");
         }
 
         Map<String, Object> meta = new HashMap<>();
-        meta.put("page", pageMerchant.getNumber());
-        meta.put("size", pageMerchant.getSize());
-        meta.put("totalData", pageMerchant.getTotalElements());
-        meta.put("totalDataOnPage", pageMerchant.getNumberOfElements());
+        meta.put("page", dataRole.getNumber());
+        meta.put("size", dataRole.getSize());
+        meta.put("totalData", dataRole.getTotalElements());
+        meta.put("totalDataOnPage", dataRole.getNumberOfElements());
 
         Map<String, Object> newData = new HashMap<>();
-        newData.put("data", pageMerchant.getContent());
+        newData.put("data", dataRole.getContent());
         newData.put("meta", meta);
 
-        GeneralResponse generalResponse = new GeneralResponse();
         generalResponse.success("200", "List Of Role", newData);
         return generalResponse;
     }
@@ -46,14 +48,6 @@ public class RoleService {
     public GeneralResponse addNewRole (Role role){
         GeneralResponse generalResponse = new GeneralResponse();
 
-        System.out.println(role + "check data role");
-
-//        for(Permissions permissions : role.getPermissions()) {
-//            permissions.getName()
-//            role.setPermissions(permissions.setName("wlwlw"));
-//            roleRepository.save(role);
-//            generalResponse.success("201", "Success created category !", role);
-//        }
         roleRepository.save(role);
         generalResponse.success("201", "Success created Role !", role);
 
@@ -61,12 +55,12 @@ public class RoleService {
     }
 
     public GeneralResponse updateRole (Role role){
-        Date date = new Date();
         Optional<Role> roleOptional = roleRepository.findById(role.getId());
 
         GeneralResponse generalResponse = new GeneralResponse();
+        Date date = new Date();
 
-        Role newRole = new Role();
+        Role newRole;
         if (roleOptional.isPresent()){
             newRole = roleOptional.get();
             newRole.setModifiedDate(date);

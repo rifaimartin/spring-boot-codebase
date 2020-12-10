@@ -21,9 +21,8 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<GeneralResponse> getAllUserController( @RequestParam(defaultValue = "0") Integer pageNo,
-                                                           @RequestParam(defaultValue = "10") Integer pageSize) {
-        return new ResponseEntity<>(userService.getAllUser(pageNo, pageSize), HttpStatus.OK);
+    public ResponseEntity<GeneralResponse> getAllUserController(@RequestParam Integer pageNo,Integer pageSize,String keyword) {
+        return new ResponseEntity<>(userService.getAllUser(pageNo, pageSize, keyword), HttpStatus.OK);
     }
 
     @PostMapping("/login")

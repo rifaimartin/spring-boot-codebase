@@ -38,10 +38,11 @@ public class MerchantService {
         this.merchantRepository = merchantRepository;
     }
 
-    public GeneralResponse getAllMerchantService(Integer pageNo , Integer pageSize){
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Merchant> pageMerchant = merchantRepository.findAll(pageable);
+    public GeneralResponse getAllMerchantService(Integer pageNo , Integer pageSize, String keyword){
 
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        System.out.println(keyword+ "data keyword");
+        Page<Merchant> pageMerchant = merchantRepository.findAll(pageable, keyword);
 
         Map<String, Object> meta = new HashMap<>();
         meta.put("page", pageMerchant.getNumber());

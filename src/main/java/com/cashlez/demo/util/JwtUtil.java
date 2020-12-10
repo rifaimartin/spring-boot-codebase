@@ -35,11 +35,11 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(User user, String web, String userId) {
-        return createToken(user, web, userId);
+    public String generateToken(User user, String userId) {
+        return createToken(user,  userId);
     }
 
-    private String createToken(User user, String web, String userId) {
+    private String createToken(User user, String userId) {
         Claims claims = Jwts.claims().setSubject(user.getUserName());
 //        claims.put("scopes", userDetails.getAuthorities());
         claims.setId(userId);
@@ -47,7 +47,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(user.getUserName())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(getExpiration(web))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256, JwtProperty.SECRET).compact();
     }
 

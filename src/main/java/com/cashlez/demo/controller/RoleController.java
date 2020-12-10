@@ -21,9 +21,8 @@ public class RoleController {
     }
 
     @PostMapping()
-    public ResponseEntity<GeneralResponse> getAllMerchant( @RequestParam(defaultValue = "0") Integer pageNo,
-                                                           @RequestParam(defaultValue = "10") Integer pageSize) {
-        return new ResponseEntity<>(roleService.getAllRole(pageNo, pageSize), HttpStatus.OK);
+    public ResponseEntity<GeneralResponse> getAllMerchant( @RequestParam Integer pageNo, Integer pageSize, String keyword) {
+        return new ResponseEntity<>(roleService.getAllRole(pageNo, pageSize, keyword), HttpStatus.OK);
     }
 
     @PostMapping("/get_one_role")
